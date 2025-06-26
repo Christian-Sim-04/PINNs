@@ -18,14 +18,26 @@ class Network(nn.Module):
         lr=0.001,
         loss2=None, 
         loss2_weight=0.1,
+        initial_time=None,
+        initial_temp=None,
+        ic_loss_weight=0.1,
     ) -> None:
         super().__init__()
 
         self.epochs = epochs
-        self.loss = loss
-        self.loss2 = loss2
+        self.loss = loss     #data loss
+        self.loss2 = loss2   #pde loss
         self.loss2_weight = loss2_weight
-        self.lr = lr
+        self.initial_time = initial_time   #IC
+        self.initial_temp = initial_temp   #IC
+        self.ic_loss_weight = ic_loss_weight
+
+        if initial_temp is not None and initial_time is not None:
+            self.initial_time = torch.tensor([initial_time], dtype=torch.float, requires_grad=True)
+            self.initial_temp = torch.tensor([initial_temp], dtype=torch.float)
+
+
+
         self.lr = lr
         self.n_units = n_units
 
@@ -55,12 +67,20 @@ class Network(nn.Module):
         losses = []
 
         for ep in range(self.epochs):
+            #data loss
             optimizer.zero_grad()
             outputs = self.forward(Xtensor)
             loss = self.loss(ytensor, outputs)
 
+            #pde loss
             if self.loss2:
                 loss += self.loss2_weight * self.loss2(self)
+
+            #ic loss
+            if self.initial_time is not None and self.initial_temp is not None:
+                predicted_initial_temp = self.forward(self.initial_time)
+                ic_loss = self.ic_loss_weight * self.loss(predicted_initial_temp, self.initial_temp)
+                loss += ic_loss
 
             loss.backward()
             optimizer.step()
@@ -74,5 +94,5 @@ class Network(nn.Module):
     def predict(self, X):
         self.eval()
         X_tensor = np_to_torch(X)
-        out = self.forward(X_tensor)  #added the reshape part last, remove to restore last version
+        out = self.forward(X_tensor)
         return out.detach().numpy()
