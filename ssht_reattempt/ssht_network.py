@@ -18,13 +18,13 @@ class HeatNet2D(nn.Module):
 
         self.layers = nn.Sequential(
             nn.Linear(input_dim, n_units),
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Linear(n_units, n_units),
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Linear(n_units, n_units),
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Linear(n_units, n_units),
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Linear(n_units, output_dim)
         )
 
