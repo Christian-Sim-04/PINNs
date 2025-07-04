@@ -26,3 +26,9 @@ def bc_loss_2d(model, x_bc, y_bc, t_bc):
     T = model(xy)
 
     return ((T - t_bc) ** 2).mean()
+
+
+def data_loss_2d(model, x_data, y_data, T_data):
+    xy = torch.cat([x_data, y_data], dim=1)
+    T_pred = model(xy)
+    return ((T_pred - T_data) ** 2).mean()
