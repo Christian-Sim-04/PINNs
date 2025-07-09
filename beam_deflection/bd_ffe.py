@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 
 class FourierFeatureEmbedding(nn.Module):
-    def __init__(self, input_feat, num_frequencies=16, scale=1):
+    def __init__(self, input_feat, num_frequencies=4, scale=1):
         super().__init__()
         self.B = nn.Parameter(
             torch.randn((input_feat, num_frequencies)) * scale, requires_grad=False
