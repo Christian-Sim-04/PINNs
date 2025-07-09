@@ -50,6 +50,6 @@ class BeamNet(nn.Module):
             loss.backward()
             optimizer.step()
             losses.append(loss.item())
-            if ep % int(epochs/10) == 0:
+            if ep % int(epochs/30) == 0:
                 print(f"Epoch {ep}: Total Loss {loss.item():.4e} | PDE {loss_pde.item():.4e} | BC {loss_bc.item():.4e} | IF {loss_if.item():.4e}")
         return losses
