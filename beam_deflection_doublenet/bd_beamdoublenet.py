@@ -4,13 +4,13 @@ import torch.nn as nn
 class BeamDoubleNet(nn.Module):
     def __init__(self, input_dim=1, output_dim=2,
                  n_units=40, n_layers=4,
-                 pde_weight=1.0, bc_weight=1.0, if_weight=1.0,
+                 pde_weight=1.0, bc_weight=1.0, #if_weight=1.0,
                  if_cont_weight=1.0, if_shear_weight=1.0):
         super().__init__()
 
         self.pde_weight = pde_weight
         self.bc_weight = bc_weight
-        self.if_weight = if_weight
+        #self.if_weight = if_weight
         self.input_dim = input_dim
         self.if_cont_weight = if_cont_weight
         self.if_shear_weight = if_shear_weight

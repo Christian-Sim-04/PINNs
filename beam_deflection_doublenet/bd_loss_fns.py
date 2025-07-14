@@ -93,7 +93,7 @@ def bc_loss(model_beam1, model_beam2, xmin, xmax):
     return loss_A + loss_B
 
 
-def interface_loss(model_beam1, model_beam2, xmin, xmax, if_cont_weight, if_shear_weight):
+def interface_loss(model_beam1, model_beam2, if_shear_weight, if_cont_weight, xmin, xmax):
     #take a point just left and just right of the interface
     epsilon = 1e-5
     scale = xmax-xmin
