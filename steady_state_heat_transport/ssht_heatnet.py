@@ -73,7 +73,7 @@ class HeatNet(nn.Module):
 
             if self.pde_loss:
                 lpde = self.pde_weight * self.pde_loss(self, x_domain_torch, y_domain_torch)
-                loss += lpde   ###last thing i changed
+                loss += lpde   
 
             if self.bc_loss:
                 lbc = self.bc_weight * self.bc_loss(self, x_bc, y_bc, t_bc)

@@ -13,10 +13,10 @@ def run_bayesian_optimisation(data, epochs_per_trial, n_trials, device):
     def objective(trial):
         pde_weight = trial.suggest_float('pde_weight', 1e-3, 10, log=True)#log scale search
         bc_weight = trial.suggest_float('bc_weight', 1e-6, 10, log=True)
-        #if_weight = trial.suggest_float('if_weight', 1e-6, 10, log=True) #individual weights now applied
+        if_weight = trial.suggest_float('if_weight', 1e-6, 10, log=True) #individual weights now applied
 
-        if_cont_weight = trial.suggest_float('if_cont_weight', 1.0, 10.0, log=True)
-        if_shear_weight = trial.suggest_float('if_shear_weight', 1e-5, 1e-3, log=True)
+        #if_cont_weight = trial.suggest_float('if_cont_weight', 1.0, 10.0, log=True)
+        #if_shear_weight = trial.suggest_float('if_shear_weight', 1e-5, 1e-3, log=True)
 
         learning_rate = trial.suggest_float('learning_rate', 1e-6, 1e-2, log=True)
         n_units = 40
@@ -24,13 +24,13 @@ def run_bayesian_optimisation(data, epochs_per_trial, n_trials, device):
 
         model_beam1 = BeamDoubleNet(
             input_dim=1, output_dim=2, n_units=n_units, n_layers=n_layers,
-            pde_weight=pde_weight, bc_weight=bc_weight, #if_weight=if_weight,
-            if_cont_weight=if_cont_weight, if_shear_weight=if_shear_weight,
+            pde_weight=pde_weight, bc_weight=bc_weight, if_weight=if_weight,
+            #if_cont_weight=if_cont_weight, if_shear_weight=if_shear_weight,
         ).to(device)
         model_beam2 = BeamDoubleNet(
             input_dim=1, output_dim=2, n_units=n_units, n_layers=n_layers,
-            pde_weight=pde_weight, bc_weight=bc_weight, #if_weight=if_weight,
-            if_cont_weight=if_cont_weight, if_shear_weight=if_shear_weight,
+            pde_weight=pde_weight, bc_weight=bc_weight, if_weight=if_weight,
+            #if_cont_weight=if_cont_weight, if_shear_weight=if_shear_weight,
         ).to(device)
 
         optimizer = torch.optim.Adam(
@@ -42,8 +42,8 @@ def run_bayesian_optimisation(data, epochs_per_trial, n_trials, device):
             optimizer.zero_grad()
             loss_residual = pde_loss(model_beam1, x1_pde_torch, xmin, xmax) + pde_loss(model_beam2, x2_pde_torch, xmin, xmax)
             loss_boundary = bc_loss(model_beam1, model_beam2, xmin, xmax)
-            loss_interface = interface_loss(model_beam1, model_beam2, if_shear_weight, if_cont_weight, xmin, xmax)
-            total_loss = pde_weight * loss_residual + bc_weight * loss_boundary + loss_interface
+            loss_interface = interface_loss(model_beam1, model_beam2, xmin, xmax)#, if_shear_weight, if_cont_weight, )
+            total_loss = pde_weight * loss_residual + bc_weight * loss_boundary + if_weight * loss_interface
             total_loss.backward()
             optimizer.step()
         

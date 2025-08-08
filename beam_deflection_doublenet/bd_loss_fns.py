@@ -93,7 +93,7 @@ def bc_loss(model_beam1, model_beam2, xmin, xmax):
     return loss_A + loss_B
 
 
-def interface_loss(model_beam1, model_beam2, if_shear_weight, if_cont_weight, xmin, xmax):
+def interface_loss(model_beam1, model_beam2, xmin, xmax):#, if_shear_weight, if_cont_weight):
     #take a point just left and just right of the interface
     epsilon = 1e-5
     scale = xmax-xmin
@@ -129,4 +129,5 @@ def interface_loss(model_beam1, model_beam2, if_shear_weight, if_cont_weight, xm
     #shear jump (point load)
     shear_jump = ((EI2*vR_x_physical - EI1*vL_x_physical + 500)**2).mean()   #_denorms
 
-    return if_cont_weight * cont_loss + if_shear_weight * shear_jump
+    #return if_cont_weight * cont_loss + if_shear_weight * shear_jump
+    return cont_loss + shear_jump

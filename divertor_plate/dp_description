@@ -1,0 +1,5 @@
+Training not working at all. Need to revisit this, ideally haver a chat with Omer.
+
+
+Maybe I should try to make the setup the same as with the previous heatnet (ie, make epochs, lr
+etc. arguments of the class and then call self.epochs etc in the training loop)

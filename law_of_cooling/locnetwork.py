@@ -12,7 +12,7 @@ class Network(nn.Module):
     def __init__(self,
         input_dim,
         output_dim,
-        n_units=100,
+        n_units=100,  #no of neurons per hidden layer
         epochs=1000,
         loss=nn.MSELoss(),
         lr=0.001,
